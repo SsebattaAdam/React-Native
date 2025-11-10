@@ -1,0 +1,29 @@
+EXPO CLI TO BE INSTALLED GLOBALLY BUT NOT NECESSARY 
+
+npm install -g expo-cli
+
+
+TO INSTALL THE PROJECT IN THE FOLDER 
+npx create-expo-app@latest ReactNativeApp
+npx create-expo-app@latest ReactNativeApp
+
+
+npm run android
+- npm run ios # you need to use macOS to build the iOS project - use the Expo app if you need to do iOS development without a Mac
+- npm run web
+
+
+to clean the project 
+ npm run reset-project and then you press R to reload the project
+
+to install the packages for designin the projrct
+top\ALL\ReactNative\reactnativeapp>npm install nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+
+
+after you customize the tailwind css
+npx tailwindcss init
+
+
+ content: ["./App.tsx", "./components/**/*.{js,jsx,ts,tsx}"],
+  presets: [require("nativewind/preset")],
+press those in tailwinf.config file 

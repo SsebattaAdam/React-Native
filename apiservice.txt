@@ -1,0 +1,12 @@
+// Simple client you can paste near the top of the file for now
+const API_BASE_URL = 'https://your-api.example.com'; // replace
+
+async function apiPost<TReq, TRes>(path: string, body: TReq): Promise<TRes> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return res.json() as Promise<TRes>;
+}

@@ -1,0 +1,692 @@
+
+  // Login API call
+  static Future<AuthResponse> login(String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/login'),
+        headers: _getHeaders(),
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return AuthResponse.fromJson(data);
+        
+      } else {
+        return AuthResponse(
+          success: false,
+          message: data['message'] ?? 'Login failed',
+        );
+      }
+    } catch (e) {
+      return AuthResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Sign up API call
+  static Future<AuthResponse> signUp(String name, String email, String password, String confirmPassword) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/register'),
+        headers: _getHeaders(),
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'password': password,
+          'password_confirmation': confirmPassword,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return AuthResponse.fromJson(data);
+      } else {
+        return AuthResponse(
+          success: false,
+          message: data['message'] ?? 'Registration failed',
+        );
+      }
+    } catch (e) {
+      return AuthResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Logout API call
+  static Future<AuthResponse> logout() async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/logout'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return AuthResponse.fromJson(data);
+      } else {
+        return AuthResponse(
+          success: false,
+          message: data['message'] ?? 'Logout failed',
+        );
+      }
+    } catch (e) {
+      return AuthResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Forgot password API call
+  static Future<AuthResponse> forgotPassword(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/forgot-password'),
+        headers: _getHeaders(),
+        body: jsonEncode({
+          'email': email,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return AuthResponse.fromJson(data);
+      } else {
+        return AuthResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to send reset email',
+        );
+      }
+    } catch (e) {
+      return AuthResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get user profile
+  static Future<AuthResponse> getProfile() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/profile'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return AuthResponse.fromJson(data);
+      } else {
+        return AuthResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to get profile',
+        );
+      }
+    } catch (e) {
+      return AuthResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+
+
+  // Get dashboard overview data
+  static Future<DashboardResponse> getDashboardData() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return DashboardResponse.fromJson(data);
+      } else {
+        return DashboardResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch dashboard data',
+        );
+      }
+    } catch (e) {
+      return DashboardResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get portfolio summary
+  static Future<PortfolioResponse> getPortfolioSummary() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/portfolio'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PortfolioResponse.fromJson(data);
+      } else {
+        return PortfolioResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch portfolio data',
+        );
+      }
+    } catch (e) {
+      return PortfolioResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get today's P&L
+  static Future<PnLResponse> getTodaysPnL() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/todays-pnl'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PnLResponse.fromJson(data);
+      } else {
+        return PnLResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch today\'s P&L',
+        );
+      }
+    } catch (e) {
+      return PnLResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get signals overview (counts by status)
+  static Future<SignalsOverviewResponse> getSignalsOverview() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/signals-overview'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalsOverviewResponse.fromJson(data);
+      } else {
+        return SignalsOverviewResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch signals overview',
+        );
+      }
+    } catch (e) {
+      return SignalsOverviewResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get recent signals for dashboard
+  static Future<SignalResponse> getRecentSignals({int limit = 5}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/recent-signals?limit=$limit'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch recent signals',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get performance metrics
+  static Future<PerformanceResponse> getPerformanceMetrics() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/performance'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PerformanceResponse.fromJson(data);
+      } else {
+        return PerformanceResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch performance metrics',
+        );
+      }
+    } catch (e) {
+      return PerformanceResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get pair performance
+  static Future<PairPerformanceResponse> getPairPerformance() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/pair-performance'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PairPerformanceResponse.fromJson(data);
+      } else {
+        return PairPerformanceResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch pair performance',
+        );
+      }
+    } catch (e) {
+      return PairPerformanceResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Update base portfolio value
+  static Future<PortfolioResponse> updateBasePortfolio(double baseValue) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/dashboard/portfolio/base'),
+        headers: _getHeaders(needsAuth: true),
+        body: jsonEncode({
+          'base_portfolio_value': baseValue,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PortfolioResponse.fromJson(data);
+      } else {
+        return PortfolioResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to update base portfolio',
+        );
+      }
+    } catch (e) {
+      return PortfolioResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get portfolio data
+  static Future<PortfolioResponse> getPortfolio() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/portfolio'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PortfolioResponse.fromJson(data);
+      } else {
+        return PortfolioResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch portfolio data',
+        );
+      }
+    } catch (e) {
+      return PortfolioResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get P&L data
+  static Future<PnLResponse> getPnL() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/pnl'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PnLResponse.fromJson(data);
+      } else {
+        return PnLResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch P&L data',
+        );
+      }
+    } catch (e) {
+      return PnLResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get performance data
+  static Future<PerformanceResponse> getPerformance() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/dashboard/performance'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return PerformanceResponse.fromJson(data);
+      } else {
+        return PerformanceResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch performance data',
+        );
+      }
+    } catch (e) {
+      return PerformanceResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // ============ SIGNAL ENDPOINTS ============
+
+  // Get all signals
+  static Future<SignalResponse> getSignals({String? status}) async {
+    try {
+      String url = '$baseUrl/signals';
+      if (status != null && status != 'ALL') {
+        url += '?status=$status';
+      }
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch signals',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get signal by ID
+  static Future<SignalResponse> getSignal(String signalId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/signals/$signalId'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch signal',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Create new signal
+  static Future<SignalResponse> createSignal({
+    required String pair,
+    required String type,
+    required double entryPrice,
+    double? stopLoss,
+    double? takeProfit,
+    String? notes,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/signals'),
+        headers: _getHeaders(needsAuth: true),
+        body: jsonEncode({
+          'pair': pair,
+          'type': type,
+          'entry_price': entryPrice,
+          'stop_loss': stopLoss,
+          'take_profit': takeProfit,
+          'notes': notes,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to create signal',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Update signal
+  static Future<SignalResponse> updateSignal({
+    required String signalId,
+    String? pair,
+    String? type,
+    double? entryPrice,
+    double? stopLoss,
+    double? takeProfit,
+    String? status,
+    String? notes,
+    double? currentPrice,
+    double? pnl,
+  }) async {
+    try {
+      Map<String, dynamic> body = {};
+      if (pair != null) body['pair'] = pair;
+      if (type != null) body['type'] = type;
+      if (entryPrice != null) body['entry_price'] = entryPrice;
+      if (stopLoss != null) body['stop_loss'] = stopLoss;
+      if (takeProfit != null) body['take_profit'] = takeProfit;
+      if (status != null) body['status'] = status;
+      if (notes != null) body['notes'] = notes;
+      if (currentPrice != null) body['current_price'] = currentPrice;
+      if (pnl != null) body['pnl'] = pnl;
+
+      final response = await http.put(
+        Uri.parse('$baseUrl/signals/$signalId'),
+        headers: _getHeaders(needsAuth: true),
+        body: jsonEncode(body),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to update signal',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Delete signal
+  static Future<SignalResponse> deleteSignal(String signalId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/signals/$signalId'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to delete signal',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Close signal
+  static Future<SignalResponse> closeSignal(String signalId, double closingPrice) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/signals/$signalId/close'),
+        headers: _getHeaders(needsAuth: true),
+        body: jsonEncode({
+          'closing_price': closingPrice,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to close signal',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Activate pending signal
+  static Future<SignalResponse> activateSignal(String signalId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/signals/$signalId/activate'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalResponse.fromJson(data);
+      } else {
+        return SignalResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to activate signal',
+        );
+      }
+    } catch (e) {
+      return SignalResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+
+  // Get signal statistics
+  static Future<SignalStatsResponse> getSignalStats() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/signals/stats'),
+        headers: _getHeaders(needsAuth: true),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return SignalStatsResponse.fromJson(data);
+      } else {
+        return SignalStatsResponse(
+          success: false,
+          message: data['message'] ?? 'Failed to fetch signal statistics',
+        );
+      }
+    } catch (e) {
+      return SignalStatsResponse(
+        success: false,
+        message: 'Network error: $e',
+      );
+    }
+  }
+}
